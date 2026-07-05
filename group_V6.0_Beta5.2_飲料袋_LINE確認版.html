@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>192巷食堂｜V6.0 Beta 5.2 團揪系統</title>
+<style>
+body{font-family:"Microsoft JhengHei",Arial,sans-serif;background:#f5ead8;margin:0;color:#333;padding-bottom:96px}
+header{background:#5c6148;color:#fff;text-align:center;padding:20px 12px}
+header h1{margin:0;font-size:34px;letter-spacing:8px;color:#fff;text-shadow:2px 2px 4px rgba(0,0,0,.25)}
+header p{margin:8px 0 0;font-size:14px;line-height:1.8}.container{max-width:960px;margin:auto;padding:12px}.card{background:#fffaf0;border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 3px 12px rgba(0,0,0,.12)}
+h2{margin:0 0 12px;color:#b23b25;border-bottom:2px solid #d9a45f;padding-bottom:8px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}label{font-weight:bold;font-size:14px}
+input,select,textarea{width:100%;box-sizing:border-box;padding:10px;border:1px solid #c9b89c;border-radius:8px;font-size:15px;background:#fff;color:#333;-webkit-text-fill-color:#333}textarea{resize:vertical}
+button{border:0;background:#c65f26;color:white;border-radius:10px;padding:10px 14px;font-size:15px;cursor:pointer;font-weight:bold}
+.inline-choice{display:flex;align-items:center;gap:8px;border:1px solid #c9b89c;border-radius:8px;background:#fff;padding:6px;min-height:42px;box-sizing:border-box}
+.inline-choice button{flex:1;background:#fff;color:#4f3c24;border:1px solid #eadcc6;border-radius:8px;padding:8px 10px;font-size:14px;min-width:0}
+.inline-choice button.active{background:#c65f26;color:#fff;border-color:#c65f26}
+.inline-choice button.active::after{content:' ✓';font-weight:bold}
+@media(max-width:420px){.inline-choice{gap:6px}.inline-choice button{font-size:13px;padding:8px 6px}}
+button.secondary{background:#586047}button.gray{background:#868e96}button.green{background:#2f9e44}button.red{background:#c92a2a}button:disabled{opacity:.55;cursor:not-allowed}.notice{background:#fff4cc;border-left:6px solid #f08c00;padding:12px;border-radius:8px;line-height:1.7}.okbox{background:#d3f9d8;border-left:6px solid #2f9e44}.dangerbox{background:#ffe3e3;border-left-color:#c92a2a;color:#922}
+.category-nav{position:sticky;top:0;z-index:999;background:#fffaf0;border-bottom:1px solid #eadcc6;padding:8px 10px;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.category-nav button{display:inline-flex;align-items:center;gap:4px;border:0;background:#fff;color:#4f3c24;border:1px solid #d9a45f;border-radius:999px;padding:8px 12px;margin:0 4px 0 0;font-size:14px;font-weight:bold;white-space:nowrap}.category{margin-bottom:18px;scroll-margin-top:62px}.category-title{font-size:22px;font-weight:bold;color:#b23b25;margin:8px 0}.hint{font-size:13px;color:#777;font-weight:normal;margin-left:4px}
+.item-card{background:white;border:1px solid #eadcc6;border-radius:14px;padding:12px;margin:10px 0}.item-card.soldout{opacity:.48;background:#eee}.item-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.item-name{font-weight:bold;font-size:17px}.price{font-weight:bold;color:#c65f26;font-size:17px;white-space:nowrap}.soldout-badge{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:#868e96;color:white;font-size:12px}.status-note{font-size:13px;color:#868e96;margin-top:8px}
+.line-card{background:#fff8e8;border:1px dashed #d9a45f;border-radius:12px;padding:10px;margin-top:10px}.row{display:grid;grid-template-columns:80px 1fr;gap:8px;align-items:center;margin:8px 0}.qtybox{display:flex;align-items:center;gap:8px}.qtybtn{width:34px;height:34px;border:0;border-radius:8px;background:#586047;color:white;font-size:20px;padding:0}.qty{width:64px;text-align:center}.subtotal{text-align:right;font-weight:bold;color:#c92a2a;font-size:18px}
+.custom-select-btn,.addon-multi-btn{width:100%;box-sizing:border-box;padding:10px 38px 10px 10px;border:1px solid #c9b89c;border-radius:8px;font-size:15px;background:#fff;color:#333;text-align:left;min-height:42px;cursor:pointer;position:relative}.custom-select-btn:after,.addon-multi-btn:after{content:'▼';position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:#8a6b3f}.select-sheet-mask{display:none;position:fixed;inset:0;z-index:20000;background:rgba(0,0,0,.35)}.select-sheet-mask.show{display:block}.select-sheet{display:none;position:fixed;left:0;right:0;bottom:0;z-index:20001;background:#fffaf0;border-radius:18px 18px 0 0;box-shadow:0 -8px 28px rgba(0,0,0,.28);padding:14px;max-height:72vh;overflow:auto;-webkit-overflow-scrolling:touch}.select-sheet.show{display:block}.select-sheet-title{font-weight:bold;color:#b23b25;font-size:18px;margin:4px 0 10px}.select-option-btn{width:100%;display:block;text-align:left;background:#fff;color:#333;border:1px solid #eadcc6;border-radius:10px;padding:13px 12px;margin:8px 0;font-size:16px}.select-option-btn.selected{background:#fff3df;color:#b23b25;border-color:#d9a45f;font-weight:bold}.select-choice{display:flex;align-items:center;gap:10px;background:#fff;color:#333;border:1px solid #eadcc6;border-radius:10px;padding:13px 12px;margin:8px 0;font-size:16px}.select-choice input{width:auto;transform:scale(1.15)}.select-choice.selected{background:#fff3df;color:#b23b25;border-color:#d9a45f;font-weight:bold}.sheet-actions{display:flex;gap:8px;margin-top:10px}.sheet-actions button{flex:1}.sheet-close{background:#868e96}.hidden{display:none!important}.small{font-size:13px;color:#666;line-height:1.6}.empty{text-align:center;color:#777;padding:24px 8px;line-height:1.8}.group-list{line-height:1.7}.entry{background:#fff;border:1px solid #eadcc6;border-radius:12px;padding:10px;margin:8px 0}.entry-title{font-weight:bold;color:#b23b25}.entry-text{white-space:pre-wrap;font-size:13px;margin-top:6px}.entry-actions{margin-top:8px;text-align:right}.entry-actions button{font-size:13px;padding:7px 10px;background:#c92a2a}.copy-row{display:flex;gap:8px}.copy-row input{flex:1}.mobile-cart{position:fixed;left:10px;right:10px;bottom:10px;z-index:9999;background:#fff3df;border:2px solid #d9a45f;border-radius:16px;box-shadow:0 4px 18px rgba(0,0,0,.25);overflow:hidden}.mobile-cart-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;font-size:18px;font-weight:bold;color:#b23b25}.mobile-cart-total{font-size:24px;color:#c92a2a}.mobile-cart-panel{display:flex;gap:6px;padding:8px 10px 10px;border-top:1px solid #d9a45f;background:#fffaf0}.mobile-cart-panel button{flex:1;width:auto;margin:0;padding:10px 6px;font-size:14px}
+@media(max-width:700px){header h1{font-size:24px;letter-spacing:4px}.grid{grid-template-columns:1fr}.container{padding:8px}.card{padding:12px}.row{grid-template-columns:72px 1fr}.mobile-cart-panel button{font-size:13px}}
+.summary-box{background:#fff;border:1px solid #eadcc6;border-radius:12px;padding:12px;margin:10px 0}.summary-title{font-weight:bold;color:#b23b25;font-size:17px;margin-bottom:8px}.summary-line{padding:7px 0;border-bottom:1px dashed #eadcc6}.summary-line:last-child{border-bottom:0}.summary-muted{font-size:13px;color:#666}.toggle-detail-btn{width:100%;background:#586047;margin-top:8px}
+
+.admin-only{display:none}
+body.admin-mode .admin-only{display:block}
+.deadline-lock{background:#ffe3e3;border-left:6px solid #c92a2a;color:#922;padding:12px;border-radius:8px;line-height:1.7;margin-top:10px}
+
+.group-cart-mask{display:none;position:fixed;inset:0;z-index:30000;background:rgba(0,0,0,.45)}
+.group-cart-mask.show{display:block}
+.group-cart-modal{display:none;position:fixed;left:0;right:0;bottom:0;z-index:30001;background:#fffaf0;border-radius:18px 18px 0 0;box-shadow:0 -8px 28px rgba(0,0,0,.28);max-height:86vh;overflow:auto}
+.group-cart-modal.show{display:block}
+.group-cart-header{position:sticky;top:0;background:#fffaf0;padding:14px;border-bottom:1px solid #eadcc6;z-index:1}
+.group-cart-header h2{margin:0;color:#b23b25;border-bottom:0;padding-bottom:0}
+.group-cart-body{padding:12px 14px 86px}
+.group-cart-footer{position:fixed;left:0;right:0;bottom:0;z-index:30002;display:none;gap:8px;padding:10px 12px;background:#fff3df;border-top:1px solid #d9a45f;box-shadow:0 -4px 14px rgba(0,0,0,.16)}
+.group-cart-footer.show{display:flex}
+.group-cart-footer button{flex:1}
+.review-item{background:#fff;border:1px solid #eadcc6;border-radius:14px;padding:12px;margin-bottom:10px}
+.review-title{font-weight:bold;font-size:16px;color:#333;line-height:1.5}
+.review-meta{font-size:13px;color:#666;line-height:1.7;margin-top:4px}
+.review-controls{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px}
+.review-qty{display:flex;align-items:center;gap:8px}
+.review-qty button{width:34px;height:34px;padding:0;border-radius:8px;background:#586047;font-size:20px}
+.review-qty span{min-width:32px;text-align:center;font-weight:bold;font-size:18px}
+.review-subtotal{color:#c92a2a;font-weight:bold;white-space:nowrap}
+.review-delete{background:#868e96;padding:8px 12px}
+</style>
+</head>
+<body>
+<header><h1>１９２巷食堂｜團購訂單</h1><p>主揪建立團購連結，同事各自填餐點，最後由主揪彙整送出</p></header>
+<div class="container">
+  <div id="storeBanner" class="notice hidden"></div>
+  <section id="queryPanel" class="card">
+    <h2>🔍 團購訂單查詢</h2>
+    <label>主揪電話</label>
+    <input id="queryPhone" placeholder="請輸入主揪電話" autocomplete="off">
+    <button style="width:100%;margin-top:10px" onclick="queryGroupOrder()">用電話查詢最近一筆團購</button>
+    <div id="queryResult" style="margin-top:12px;line-height:1.8;white-space:pre-wrap"></div>
+  </section>
+  <section id="createPanel" class="card hidden">
+    <h2>建立團購</h2>
+    <div class="grid">
+      <div><label>團購名稱</label><input id="groupName" placeholder="例如：週五午餐團"></div>
+      <div><label>主揪姓名</label><input id="hostName" placeholder="例如：Amanda"></div>
+      <div><label>主揪電話 <span style="color:red">*</span></label><input id="hostPhone" placeholder="請填主揪電話" autocomplete="off"></div>
+      <div><label>管理金鑰 <span style="color:red">*</span></label><input id="adminKey" placeholder="主揪自訂，至少4碼" autocomplete="off"></div>
+      <div><label>團購截止時間 <span style="color:red">*</span></label><input id="deadlineTime" type="datetime-local"></div>
+      <div><label>公司名稱</label><input id="company" placeholder="公司/部門"></div>
+      <div><label>取餐方式</label>
+        <input type="hidden" id="takeTypeValue" value="外送">
+        <div class="inline-choice" data-choice="takeType">
+          <button type="button" class="active" onclick="setHostOption('takeType','外送')">外送</button>
+          <button type="button" onclick="setHostOption('takeType','自取')">自取</button>
+        </div>
+      </div>
+      <div><label>外送地址 <span id="addressRequiredText" style="color:red">*</span></label><input id="address" placeholder="外送時必填" autocomplete="off"></div>
+      <div><label>希望抵達時間/取餐時間</label><input id="arriveTime" placeholder="例如：18:30"></div>
+      <div><label>餐具</label>
+        <input type="hidden" id="utensilsValue" value="不需要餐具">
+        <div class="inline-choice" data-choice="utensils">
+          <button type="button" class="active" onclick="setHostOption('utensils','不需要餐具')">不需要</button>
+          <button type="button" onclick="setHostOption('utensils','需要餐具')">需要</button>
+        </div>
+      </div>
+      <div><label>飲料袋</label>
+        <input type="hidden" id="drinkBagValue" value="不需要">
+        <div class="inline-choice" data-choice="drinkBag">
+          <button type="button" class="active" onclick="setHostOption('drinkBag','不需要')">不需要</button>
+          <button type="button" onclick="setHostOption('drinkBag','需要 +$1')">需要 +$1</button>
+        </div>
+      </div>
+    </div>
+    <label>團購備註</label><textarea id="groupMemo" rows="3" placeholder="例如：統一外送到公司櫃台"></textarea>
+    <button id="createGroupBtn" style="width:100%;margin-top:12px" onclick="createGroup()">建立團購連結</button>
+  </section>
+
+  <section id="adminDashboardPanel" class="card admin-only hidden">
+    <h2>📊 主揪即時統計</h2>
+    <div id="adminDashboard"></div>
+  </section>
+
+  <section id="groupPanel" class="card hidden">
+    <h2>團購資訊</h2>
+    <div id="groupInfo" class="small"></div>
+    <div class="copy-row" style="margin-top:10px"><input id="shareLink" readonly><button onclick="copyShareLink()">複製連結</button></div>
+    <div style="margin-top:8px;text-align:right">
+      <button class="gray" style="font-size:13px;padding:7px 10px" onclick="toggleAdminLogin()">主揪登入</button>
+    </div>
+    <div id="adminLoginBox" class="notice hidden" style="margin-top:10px">
+      <b>👑 主揪管理登入</b><br>
+      請輸入建立團購時設定的管理金鑰。
+      <div class="copy-row" style="margin-top:8px"><input id="adminLoginKey" placeholder="輸入管理金鑰"><button onclick="loginAdmin()">主揪登入</button></div>
+    </div>
+    <div id="adminToolsBox" class="notice admin-only" style="margin-top:10px">
+      <b>👑 主揪工具</b>
+      <div class="copy-row" style="margin-top:8px"><input id="newDeadlineTime" type="datetime-local"><button onclick="updateDeadline()">更新截止</button></div>
+    </div>
+  </section>
+
+  <section id="buyerPanel" class="card hidden">
+    <h2>填寫個人資料</h2>
+    <div class="grid">
+      <div><label>姓名</label><input id="buyerName" placeholder="請填姓名，方便主揪核對"></div>
+      <div><label>電話</label><input id="buyerPhone" placeholder="可填分機或手機"></div>
+    </div>
+    <label>個人備註</label><textarea id="buyerMemo" rows="2" placeholder="例如：不要辣、分開裝"></textarea>
+    <button class="secondary" style="width:100%;margin-top:10px" onclick="loadMyOrder()">載入/修改我已送出的餐點</button>
+    <div id="myOrderHint" class="small" style="margin-top:8px"></div>
+  </section>
+</div>
+
+<div class="category-nav hidden" id="categoryNav"></div>
+<div class="container"><div class="card hidden" id="menuCard"><div id="menu"><div class="empty">讀取菜單中...</div></div></div>
+  <section id="summaryPanel" class="card hidden admin-only"><h2>團購彙總</h2><div id="groupSummary" class="group-list"></div></section>
+</div>
+
+<div class="mobile-cart hidden" id="mobileCart"><div class="mobile-cart-bar" onclick="openGroupCartReview()"><span>🛒 <span id="qtyTotal">0</span> 份</span><span class="mobile-cart-total" id="amountTotal">$0</span></div><div class="mobile-cart-panel"><button id="addGroupBtn" onclick="openGroupCartReview()">確認個人餐點</button><button class="secondary" onclick="resetCurrentOrder()">清空個人餐點</button></div></div>
+
+<div class="group-cart-mask" id="groupCartMask" onclick="closeGroupCartReview()"></div>
+<div class="group-cart-modal" id="groupCartModal">
+  <div class="group-cart-header"><h2>🛒 個人餐點確認</h2></div>
+  <div class="group-cart-body" id="groupCartBody"></div>
+  <div class="group-cart-footer">
+    <button class="secondary" onclick="closeGroupCartReview()">繼續選餐</button>
+    <button class="green" onclick="submitCurrentOrder()">加入/更新團購</button>
+  </div>
+</div>
+
+<div class="select-sheet-mask" id="sheetMask" onclick="closeSheet()"></div><div class="select-sheet" id="selectSheet"></div>
+<script>
+const GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbwfRp77uReVhZzhEsgkDvjnLgj6juqXINpgDGRsb1Wjgefu01d_-s-xADBHWy_RUwmAow/exec";
+const optionSets={chefRice:[["加白飯",15],["加起司1片",15],["加起司2片",25]],chefPot:[["加白飯",15],["加意麵",15],["加寬冬粉",15],["加泡麵",15],["加烏龍麵",30],["加起司1片",15],["加起司2片",25],["加豬肉",40]],pot:[["加白飯",15],["加意麵",15],["加寬冬粉",15],["加泡麵",15],["加烏龍麵",30],["加起司1片",15],["加起司2片",25],["加沙茶",5],["加豬肉",40],["加海鮮",60]],curryRice:[["加白飯",15],["加起司1片",15],["加起司2片",25],["加咖哩醬",40]],plainRice:[["加白飯",15],["加起司1片",15],["加起司2片",25]],stirMain:[["加意麵",15],["加烏龍麵",30],["加起司1片",15],["加起司2片",25],["加豬肉",40]],stirNoodle:[["加泡麵",15],["加起司1片",15],["加起司2片",25],["加豬肉",40]],combo:[["冰淇淋紅茶",30],["紅茶牛奶",20],["泰式奶茶",30],["柚子茶",20],["無糖綠茶",5]]};
+const mainSets={chefPotMain:[["白飯",0],["寬冬粉",0],["泡麵",0],["意麵",10],["烏龍",20]],pot:[["白飯",0],["寬冬粉",0],["泡麵",0],["意麵",0],["烏龍",20]],stirMain:[["意麵",0],["烏龍麵",20]]};
+const categoryOrder=["主廚獨家｜飯類","主廚獨家｜鍋類","鍋燒","飯","鮮炒","炸物","湯品","小菜","飲品","套餐"];
+let gid=new URLSearchParams(location.search).get('gid')||'';let isAdmin=false;let adminKey='';let currentGroup=null;let lastGroupData=null;let loadedFromExisting=false;let groupSubmitting=false;let menuItems=[];let store=null;let currentLines=[];let currentItems=[];let qtyTotal=0;let amountTotal=0;let currentSheet=null;const groupChoiceOptions={takeType:{title:'取餐方式',options:['外送','自取']},utensils:{title:'餐具',options:['不需要餐具','需要餐具']},drinkBag:{title:'飲料袋',options:['不需要','需要 +$1']}};
+function jsonp(params){return new Promise((resolve,reject)=>{const cb='cb_'+Date.now()+'_'+Math.floor(Math.random()*99999);const s=document.createElement('script');params.callback=cb;params.t=Date.now();const qs=Object.keys(params).map(k=>encodeURIComponent(k)+'='+encodeURIComponent(params[k])).join('&');window[cb]=d=>{cleanup();resolve(d)};s.onerror=()=>{cleanup();reject(new Error('讀取失敗'))};function cleanup(){delete window[cb];if(s.parentNode)s.parentNode.removeChild(s)}s.src=GOOGLE_SCRIPT_URL+'?'+qs;document.body.appendChild(s);});}
+function cleanName(name){return String(name||'').replace(/🌶️/g,'').replace(/🌶/g,'').trim()}
+function catId(cat){return 'cat_'+String(cat).replace(/[^\u4e00-\u9fa5A-Za-z0-9]/g,'_')}
+function isSold(item){const s=String(item.status||'');return s.includes('售完')||s.includes('停售')||s.includes('暫停')||s.includes('隱藏')}
+function getMainSet(cat,name){if(cat==='主廚獨家｜鍋類')return 'chefPotMain';if(cat==='鍋燒')return 'pot';if(cat==='鮮炒' && /沙茶|泡菜/.test(name))return 'stirMain';return ''}
+function getAddonSet(cat,name){if(cat==='主廚獨家｜飯類')return 'chefRice';if(cat==='主廚獨家｜鍋類')return 'chefPot';if(cat==='鍋燒')return 'pot';if(cat==='飯'){if(/咖哩/.test(name))return 'curryRice';return 'plainRice'}if(cat==='鮮炒'){if(/海鮮炒泡麵|豬肉炒泡麵|豬排炒泡麵/.test(name))return 'stirNoodle';return 'stirMain'}if(cat==='套餐')return 'combo';return ''}
+function getAddonOptions(cat,name){let arr=(optionSets[getAddonSet(cat,name)]||[]).slice();if(cat==='主廚獨家｜飯類'&&name==='泰椰豬肉飯')arr.push(["加豬肉",40]);return arr}
+function init(){if(gid){adminKey=localStorage.getItem('groupAdminKey_'+gid)||'';isAdmin=!!adminKey;if(isAdmin)document.body.classList.add('admin-mode');document.getElementById('summaryPanel')?.classList.remove('hidden');document.getElementById('adminDashboardPanel')?.classList.remove('hidden');document.getElementById('queryPanel').classList.add('hidden');document.getElementById('groupPanel').classList.remove('hidden');document.getElementById('buyerPanel').classList.remove('hidden');document.getElementById('menuCard').classList.remove('hidden');document.getElementById('mobileCart').classList.remove('hidden');if(isAdmin)document.getElementById('summaryPanel').classList.remove('hidden');document.getElementById('shareLink').value=location.origin+location.pathname+'?gid='+gid;loadAll();}else{document.getElementById('queryPanel').classList.remove('hidden');document.getElementById('createPanel').classList.remove('hidden');loadStatusOnly();}}
+function loadStatusOnly(){jsonp({action:'status'}).then(res=>{store=res.store||null;renderStoreBanner();}).catch(()=>{});}
+function loadAll(){Promise.all([jsonp({action:'status'}),jsonp({action:'groupGet',gid:gid})]).then(([st,g])=>{if(!st.ok)throw new Error('菜單讀取失敗');menuItems=st.items||[];store=st.store||{};renderStoreBanner();renderGroup(g);renderNav();renderMenu();}).catch(err=>{document.getElementById('menu').innerHTML='<div class="empty">❌ '+err.message+'</div>';});}
+function renderStoreBanner(){const b=document.getElementById('storeBanner');if(!store)return;b.classList.remove('hidden','dangerbox','okbox');if(store.isOrderAllowed){b.classList.add('okbox');b.textContent='🟢 目前開放團購點餐';}else{b.classList.add('dangerbox');b.textContent='🔴 '+(store.message||'目前暫停接單');}}
+
+function cleanGroupEntryText(text){
+  return escapeHtml(String(text||'')
+    .split('\n')
+    .filter(line=>{
+      const t=String(line||'').trim();
+      if(!t) return false;
+      // 團購明細卡片已經顯示姓名/金額，這裡只保留餐點與備註，避免畫面重複雜亂
+      if(/^【.*】$/.test(t)) return false;
+      if(/^總數量/.test(t) || /^總金額/.test(t) || /^整體備註/.test(t)) return false;
+      return true;
+    })
+    .join('\n'));
+}
+
+function buildClientSummaryLines(entries){
+  const map={};
+  (entries||[]).forEach(e=>{
+    const items=Array.isArray(e.items)?e.items:[];
+    if(items.length){
+      items.forEach(item=>{
+        const name=String(item.name||'').trim(); if(!name)return;
+        const main=String(item.main||'').trim();
+        const addon=String(item.addon||'').trim();
+        const unit=Number(item.unit||0), qty=Number(item.qty||0), amount=Number(item.amount||unit*qty||0);
+        const key=[name,main,addon,unit].join('||');
+        if(!map[key])map[key]={name,main,addon,unit,qty:0,amount:0};
+        map[key].qty+=qty; map[key].amount+=amount;
+      });
+    }else{
+      String(e.orderText||'').split('\n').forEach(line=>{
+        const t=line.trim();
+        if(!t || /^【.*】$/.test(t) || /^分機\/電話/.test(t) || /^備註/.test(t))return;
+        const key=t;
+        if(!map[key])map[key]={raw:t,qty:0,amount:0};
+        map[key].qty+=1;
+      });
+    }
+  });
+  return Object.values(map).map((x,i)=>{
+    if(x.raw)return (i+1)+'. '+x.raw+' × '+x.qty;
+    let text=(i+1)+'. '+x.name;
+    if(x.main)text+='｜主食:'+x.main;
+    if(x.addon)text+='｜'+x.addon;
+    text+=' × '+x.qty+' = $'+x.amount;
+    return text;
+  });
+}
+function renderSummaryLines(lines){
+  if(!lines||!lines.length)return '<div class="summary-muted">目前沒有彙整資料</div>';
+  return lines.map(line=>'<div class="summary-line">'+escapeHtml(line)+'</div>').join('');
+}
+function renderPersonalEntries(entries,g){
+  let html='';
+  (entries||[]).forEach((e,i)=>{
+    const canDelete=isAdmin && g.status==='開團中' && e.rowNumber;
+    html+=`<div class="entry"><div class="entry-title">${escapeHtml(e.buyerName||'未填')}｜${e.buyerPhone?('分機/電話：'+escapeHtml(e.buyerPhone)+'｜'):''}${e.qtyTotal}份｜$${e.amountTotal}</div><div class="entry-text">${cleanGroupEntryText(e.orderText||'')}</div>${canDelete?`<div class="entry-actions"><button onclick="deleteEntry('${e.rowNumber}','${escapeAttr(e.buyerName||'')}')">刪除這筆</button></div>`:''}</div>`;
+  });
+  return html || '<div class="summary-muted">目前沒有個人明細</div>';
+}
+function groupLockKey(){return 'groupSubmitted_' + (gid || '');}
+function isGroupSubmitted(g){
+  const localLocked = !!(gid && localStorage.getItem(groupLockKey()) === 'TRUE');
+  return localLocked || !!(g && (g.status==='已送出' || g.orderId));
+}
+function lockSubmittedButton(orderId){
+  if(gid) localStorage.setItem(groupLockKey(), 'TRUE');
+  const btn=document.getElementById('submitGroupBtn');
+  if(btn){
+    btn.disabled=true;
+    btn.textContent=orderId ? ('此團購已送出：' + orderId) : '此團購已送出，無法再次送出';
+    btn.classList.remove('green');
+    btn.classList.add('secondary');
+  }
+}
+function updateSubmitButtonState(g){
+  const btn=document.getElementById('submitGroupBtn');
+  if(!btn)return;
+  if(isGroupSubmitted(g)){
+    btn.disabled=true;
+    btn.textContent='此團購已送出，無法再次送出';
+    btn.classList.remove('green');
+    btn.classList.add('secondary');
+  }else{
+    btn.disabled=false;
+    btn.textContent='主揪送出團購總訂單';
+    btn.classList.add('green');
+    btn.classList.remove('secondary');
+  }
+}
+function renderGroup(res){
+  if(!res.ok){document.getElementById('groupInfo').innerHTML='❌ '+(res.message||'讀取團購失敗');return;}
+  lastGroupData=res; const g=res.group||{}; currentGroup=g;
+  const memo=String(g.memo||'');
+  const statusText=isGroupSubmitted(g)?'已送出':(g.isDeadlinePassed?'已截止':(g.status||'開團中'));
+  document.getElementById('groupInfo').innerHTML=`${g.groupName?('團購名稱：<b>'+escapeHtml(g.groupName)+'</b><br>'):''}團購編號：<b>${g.groupId}</b><br>主揪：${escapeHtml(g.hostName||'')}　電話：${escapeHtml(g.hostPhone||'')}<br>截止：<b>${escapeHtml(g.deadlineTime||'未設定')}</b>　狀態：<b>${escapeHtml(statusText)}</b>${isAdmin?'　👑 主揪模式':''}<br>取餐：${escapeHtml(g.takeType||'')}　時間：${escapeHtml(g.arriveTime||'')}<br>公司：${escapeHtml(g.company||'')}<br>餐具：${escapeHtml(g.utensils||'不需要餐具')}　飲料袋：${escapeHtml(g.drinkBag||'不需要')}<br>${memo?('備註：'+escapeHtml(memo)+'<br>'):''}${g.orderId?'訂單編號：'+escapeHtml(g.orderId):''}${(g.isDeadlinePassed&&!isAdmin)?'<div class="deadline-lock">⛔ 此團購已截止，請聯絡主揪修改。</div>':''}`;
+  if(isAdmin)document.getElementById('adminLoginBox')?.classList.add('hidden');document.getElementById('newDeadlineTime')&&(document.getElementById('newDeadlineTime').value=g.deadlineTime||'');updateSubmitButtonState(g);
+  const summaryLines=(res.summary&&res.summary.lines&&res.summary.lines.length)?res.summary.lines.slice():buildClientSummaryLines(res.entries||[]);
+  if(Number(res.drinkBagFee||0)>0 && !summaryLines.some(x=>String(x).includes('飲料袋'))) summaryLines.push('飲料袋 × 1 = $'+Number(res.drinkBagFee||0));
+  let html='';
+  if(isAdmin){
+    html=`<div class="notice">目前 ${(res.entries||[]).length} 人，總數量 ${res.totalQty||0} 份，總金額 $${res.totalAmount||0}</div>`;
+    html+=`<div class="summary-box"><div class="summary-title">📦 彙整訂單｜店家備餐用</div>${renderSummaryLines(summaryLines)}</div>`;
+    html+=`<div class="summary-box"><div class="summary-title">👥 個人明細｜主揪核對用</div>${renderPersonalEntries(res.entries||[],g)}</div>`;
+  }else{
+    html='<div class="notice">請填寫姓名與餐點。你只會看到自己的餐點，不會看到其他團員明細。</div>';
+  }
+  document.getElementById('groupSummary').innerHTML=html;
+  renderAdminDashboard(res, summaryLines);
+  const addBtn=document.getElementById('addGroupBtn');if(addBtn)addBtn.textContent=isAdmin?'確認/更新我的餐點':'確認/更新我的餐點';
+}
+
+function renderAdminDashboard(res, summaryLines){
+  const panel=document.getElementById('adminDashboardPanel');
+  const box=document.getElementById('adminDashboard');
+  if(!panel||!box)return;
+  panel.classList.toggle('hidden', !isAdmin);
+  if(!isAdmin){box.innerHTML='';return;}
+  const g=res.group||{};
+  const lines=(summaryLines||[]);
+  let html=`<div class="summary-box">
+    <div class="summary-title">${escapeHtml(g.groupName||'團購')}｜${escapeHtml(g.status||'')}</div>
+    <div style="font-size:17px;line-height:1.9">
+      👥 目前團員：<b>${(res.entries||[]).length}</b> 人<br>
+      🍱 總數量：<b>${res.totalQty||0}</b> 份<br>
+      💰 目前金額：<b>$${res.totalAmount||0}</b><br>
+      ⏰ 截止：<b>${escapeHtml(g.deadlineTime||'未設定')}</b>
+    </div>
+  </div>`;
+  html+=`<div class="summary-box"><div class="summary-title">已訂購</div>${renderSummaryLines(lines)}</div>`;
+  html+=`<div class="summary-box"><div class="summary-title">主揪控制</div>
+    <button class="red" style="width:100%;margin:4px 0" onclick="closeGroupNow()">手動結束收單</button>
+    <button class="secondary" style="width:100%;margin:4px 0" onclick="reopenGroupNow()">重新開放收單</button>
+    <button class="green" style="width:100%;margin:4px 0" onclick="submitGroup()">送出整團訂單</button>
+  </div>`;
+  box.innerHTML=html;
+}
+function closeGroupNow(){
+  if(!isAdmin){alert('請先主揪登入');return;}
+  if(!confirm('確定要立即結束收單？團員將無法再新增或修改。'))return;
+  jsonp({action:'groupClose',gid:gid,adminKey:adminKey}).then(res=>{if(!res.ok){alert(res.message||'結束收單失敗');return;}renderGroup(res);renderMenu();alert('已結束收單');}).catch(()=>alert('結束收單失敗'));
+}
+function reopenGroupNow(){
+  if(!isAdmin){alert('請先主揪登入');return;}
+  if(!confirm('確定要重新開放收單？'))return;
+  jsonp({action:'groupReopen',gid:gid,adminKey:adminKey}).then(res=>{if(!res.ok){alert(res.message||'重新開放失敗');return;}renderGroup(res);renderMenu();alert('已重新開放收單');}).catch(()=>alert('重新開放失敗'));
+}
+
+function renderNav(){const nav=document.getElementById('categoryNav');nav.classList.remove('hidden');nav.innerHTML=categoryOrder.map(c=>`<button onclick="document.getElementById('${catId(c)}')?.scrollIntoView({behavior:'smooth'})">🛵 ${c}</button>`).join('');}
+function renderMenu(){const menu=document.getElementById('menu'); if(currentGroup&&currentGroup.isDeadlinePassed&&!isAdmin){menu.innerHTML='<div class="empty">⛔ 此團購已截止，請聯絡主揪修改。</div>';return;}const groups={};menuItems.forEach(it=>{if(String(it.hidden||'').toUpperCase()==='TRUE')return;(groups[it.category]||(groups[it.category]=[])).push(it)});let html='';categoryOrder.forEach(cat=>{const arr=groups[cat]||[];if(!arr.length)return;html+=`<div class="category" id="${catId(cat)}"><div class="category-title">${cat}</div>`;arr.forEach((it,idx)=>{const name=cleanName(it.name), sold=isSold(it), id=catId(cat)+'_'+idx, main=getMainSet(cat,name), addon=getAddonOptions(cat,name);html+=`<div class="item-card ${sold?'soldout':''}" data-name="${escapeAttr(name)}" data-price="${Number(it.price||0)}" data-cat="${escapeAttr(cat)}" id="${id}"><div class="item-head"><div class="item-name">${escapeHtml(name)}${sold?'<span class="soldout-badge">售完</span>':''}</div><div class="price">$${it.price||0}</div></div>${sold?'<div class="status-note">此品項目前售完，無法加入團購。</div>':renderLineCard(id,main,addon,cat)}</div>`});html+='</div>';});menu.innerHTML=html||'<div class="empty">目前沒有品項</div>';}
+function renderLineCard(id,main,addon,cat){let h='<div class="line-card">';if(main){h+=`<div class="row"><div>主食</div><div><button class="custom-select-btn" data-value="REQUIRED" data-options="${encodeURIComponent(JSON.stringify(mainSets[main]))}" onclick="openMainSheet(this)">請選擇主食</button></div></div>`}if(addon&&addon.length){h+=`<div class="row"><div>${cat==='套餐'?'換購':'加購'}</div><div><div class="addon-multi" data-mode="${cat==='套餐'?'single':'multi'}" data-selected="" data-options="${encodeURIComponent(JSON.stringify(addon))}"><button type="button" class="addon-multi-btn" onclick="openAddonSheet(this)">${cat==='套餐'?'選擇換購飲料':'選擇加購'}</button></div></div></div>`}h+=`<div class="row"><div>數量</div><div class="qtybox"><button class="qtybtn" onclick="chgQty(this,-1)">−</button><input class="qty" type="number" min="0" value="0" onchange="calc()"><button class="qtybtn" onclick="chgQty(this,1)">＋</button></div></div><div class="subtotal">$0</div></div>`;return h;}
+function getChoiceValue(key,fallback=''){return document.getElementById(key+'Value')?.value || fallback;}
+function setHostOption(key,value){const input=document.getElementById(key+'Value');if(input)input.value=value;const box=document.querySelector('.inline-choice[data-choice="'+key+'"]');if(box){Array.from(box.querySelectorAll('button')).forEach(btn=>{btn.classList.toggle('active',btn.textContent.replace('✓','').trim()===value || (key==='utensils'&&value==='不需要餐具'&&btn.textContent.trim().startsWith('不需要')) || (key==='utensils'&&value==='需要餐具'&&btn.textContent.trim().startsWith('需要')) || (key==='drinkBag'&&value==='需要 +$1'&&btn.textContent.indexOf('需要 +$1')>=0) || (key==='drinkBag'&&value==='不需要'&&btn.textContent.trim().startsWith('不需要')));});}if(key==='takeType')toggleGroupAddressRequired();}
+function openGroupChoiceSheet(key){const cfg=groupChoiceOptions[key];if(!cfg)return;currentSheet={type:'groupChoice',key:key};const current=getChoiceValue(key,'');let html='<div class="select-sheet-title">'+cfg.title+'</div>';cfg.options.forEach(v=>{html+=`<button class="select-option-btn ${current===v?'selected':''}" onclick="selectGroupChoice('${key}','${v}')">${v}</button>`});html+='<div class="sheet-actions"><button class="sheet-close" onclick="closeSheet()">取消</button></div>';showSheet(html)}
+function selectGroupChoice(key,value){const input=document.getElementById(key+'Value');const btn=document.getElementById(key+'Btn');if(input)input.value=value;if(btn)btn.textContent=value;if(key==='takeType')toggleGroupAddressRequired();closeSheet()}
+function openMainSheet(btn){currentSheet={type:'main',btn:btn};let opts=JSON.parse(decodeURIComponent(btn.dataset.options));let html='<div class="select-sheet-title">選擇主食</div>';opts.forEach((o,i)=>{html+=`<button class="select-option-btn ${btn.dataset.value==i?'selected':''}" onclick="selectMain(${i})">${o[0]}${o[1]?' +$'+o[1]:''}</button>`});html+='<div class="sheet-actions"><button class="sheet-close" onclick="closeSheet()">取消</button></div>';showSheet(html)}
+function selectMain(i){let btn=currentSheet.btn, opts=JSON.parse(decodeURIComponent(btn.dataset.options));btn.dataset.value=String(i);btn.textContent=opts[i][0]+(opts[i][1]?' +$'+opts[i][1]:'');closeSheet();calc();}
+function openAddonSheet(btn){const box=btn.closest('.addon-multi');currentSheet={type:'addon',box:box};let opts=JSON.parse(decodeURIComponent(box.dataset.options));let selected=String(box.dataset.selected||'').split(',').filter(Boolean).map(Number);const single=box.dataset.mode==='single';let html='<div class="select-sheet-title">'+(single?'選擇換購飲料（單選）':'選擇加購')+'</div>';opts.forEach((o,i)=>{html+=`<label class="select-choice ${selected.includes(i)?'selected':''}"><input type="${single?'radio':'checkbox'}" name="addonChoice" value="${i}" ${selected.includes(i)?'checked':''} onchange="${single?'document.querySelectorAll(\'#selectSheet .select-choice\').forEach(x=>x.classList.remove(\'selected\'));this.parentNode.classList.add(\'selected\')':'this.parentNode.classList.toggle(\'selected\',this.checked)'}">${o[0]}${o[1]?' +$'+o[1]:''}</label>`});html+='<div class="sheet-actions"><button onclick="confirmAddon()">確定</button><button class="sheet-close" onclick="closeSheet()">取消</button></div>';showSheet(html)}
+function confirmAddon(){const box=currentSheet.box;let checked=Array.from(document.querySelectorAll('#selectSheet input:checked')).map(x=>Number(x.value));if(box.dataset.mode==='single' && checked.length>1) checked=checked.slice(0,1);box.dataset.selected=checked.join(',');const opts=JSON.parse(decodeURIComponent(box.dataset.options));box.querySelector('button').textContent=checked.length?checked.map(i=>opts[i][0]+(opts[i][1]?' +$'+opts[i][1]:'')).join('、'):(box.dataset.mode==='single'?'選擇換購飲料':'選擇加購');closeSheet();calc();}
+function showSheet(html){document.getElementById('selectSheet').innerHTML=html;document.getElementById('sheetMask').classList.add('show');document.getElementById('selectSheet').classList.add('show')}function closeSheet(){document.getElementById('sheetMask').classList.remove('show');document.getElementById('selectSheet').classList.remove('show')}
+function chgQty(btn,d){const q=btn.parentNode.querySelector('.qty');q.value=Math.max(0,Number(q.value||0)+d);calc();}
+function mainInfo(card){const b=card.querySelector('.custom-select-btn');if(!b)return {text:'',price:0,ok:true};if(b.dataset.value==='REQUIRED')return {text:'',price:0,ok:false};const opts=JSON.parse(decodeURIComponent(b.dataset.options));const o=opts[Number(b.dataset.value)];return {text:o[0],price:Number(o[1]||0),ok:true}}
+function addonInfo(card){const box=card.querySelector('.addon-multi');if(!box)return {text:'',price:0};const opts=JSON.parse(decodeURIComponent(box.dataset.options));const ids=String(box.dataset.selected||'').split(',').filter(Boolean).map(Number);const arr=ids.map(i=>opts[i]).filter(Boolean);return {text:arr.map(o=>o[0]+(o[1]?' +$'+o[1]:'')).join('、'),price:arr.reduce((s,o)=>s+Number(o[1]||0),0)}}
+function calc(){qtyTotal=0;amountTotal=0;currentLines=[];currentItems=[];document.querySelectorAll('.item-card:not(.soldout)').forEach(card=>{const qty=Number(card.querySelector('.qty')?.value||0);const subEl=card.querySelector('.subtotal');if(!qty){if(subEl)subEl.textContent='$0';return;}const name=card.dataset.name, cat=card.dataset.cat, base=Number(card.dataset.price||0), main=mainInfo(card), addon=addonInfo(card);const unit=base+main.price+addon.price, sub=unit*qty;if(subEl)subEl.textContent='$'+sub;qtyTotal+=qty;amountTotal+=sub;let detail=name;if(main.text)detail+='｜主食:'+main.text;if(addon.text)detail+='｜'+(cat==='套餐'?'換購:':'加購:')+addon.text;detail+=`｜$${unit} x ${qty} = $${sub}`;currentLines.push(detail);currentItems.push({name:name,qty:qty,amount:sub,unit:unit,main:main.text,addon:addon.text});});document.getElementById('qtyTotal').textContent=qtyTotal;document.getElementById('amountTotal').textContent='$'+amountTotal;}
+function validateCurrent(){if(!store||!store.isOrderAllowed)return store?.message||'目前暫停接單';const buyer=document.getElementById('buyerName').value.trim();if(!buyer)return '請先填寫姓名';if(!qtyTotal)return '請至少選擇一個品項';let bad='';document.querySelectorAll('.item-card:not(.soldout)').forEach(card=>{const qty=Number(card.querySelector('.qty')?.value||0);if(qty&&!mainInfo(card).ok)bad=card.dataset.name+' 請選擇主食';});return bad;}
+function hasMenuSelection(){
+  let found=false;
+  document.querySelectorAll('.item-card:not(.soldout) .qty').forEach(q=>{if(Number(q.value||0)>0)found=true;});
+  return found;
+}
+function rebuildCurrentLinesFromItems(){
+  qtyTotal=0;amountTotal=0;currentLines=[];
+  currentItems=(currentItems||[]).filter(it=>Number(it.qty||0)>0).map(it=>{
+    const qty=Number(it.qty||0),unit=Number(it.unit||0),amount=unit*qty;
+    qtyTotal+=qty;amountTotal+=amount;
+    let detail=it.name||'';
+    if(it.main)detail+='｜主食:'+it.main;
+    if(it.addon)detail+='｜加購:'+it.addon;
+    detail+=`｜$${unit} x ${qty} = $${amount}`;
+    it.amount=amount;currentLines.push(detail);return it;
+  });
+  document.getElementById('qtyTotal').textContent=qtyTotal;
+  document.getElementById('amountTotal').textContent='$'+amountTotal;
+}
+function validateCurrentItems(){
+  if(!store||!store.isOrderAllowed)return store?.message||'目前暫停接單';
+  const buyer=document.getElementById('buyerName').value.trim();
+  if(!buyer)return '請先填寫姓名';
+  if(!qtyTotal)return '請至少選擇一個品項';
+  return '';
+}
+function openGroupCartReview(){
+  if(hasMenuSelection()){loadedFromExisting=false;calc();}
+  else if(loadedFromExisting){rebuildCurrentLinesFromItems();}
+  else{calc();}
+  const err=validateCurrentItems();if(err){alert(err);return;}
+  renderGroupCartReview();
+  document.getElementById('groupCartMask').classList.add('show');
+  document.getElementById('groupCartModal').classList.add('show');
+  document.querySelector('.group-cart-footer').classList.add('show');
+}
+function closeGroupCartReview(){
+  document.getElementById('groupCartMask').classList.remove('show');
+  document.getElementById('groupCartModal').classList.remove('show');
+  document.querySelector('.group-cart-footer').classList.remove('show');
+}
+function renderGroupCartReview(){
+  const body=document.getElementById('groupCartBody');if(!body)return;
+  if(!currentItems.length){body.innerHTML='<div class="empty">目前沒有餐點</div>';return;}
+  let html='';
+  currentItems.forEach((it,i)=>{
+    const qty=Number(it.qty||0),unit=Number(it.unit||0),amount=unit*qty;
+    html+=`<div class="review-item"><div class="review-title">${i+1}. ${escapeHtml(it.name||'')}</div><div class="review-meta">${it.main?('主食：'+escapeHtml(it.main)+'<br>'):''}${it.addon?('加購：'+escapeHtml(it.addon)+'<br>'):''}單價：$${unit}</div><div class="review-controls"><div class="review-qty"><button onclick="changeReviewQty(${i},-1)">−</button><span>${qty}</span><button onclick="changeReviewQty(${i},1)">＋</button></div><div class="review-subtotal">$${amount}</div><button class="review-delete" onclick="deleteReviewItem(${i})">刪除</button></div></div>`;
+  });
+  body.innerHTML=html;rebuildCurrentLinesFromItems();
+}
+function changeReviewQty(i,delta){if(!currentItems[i])return;currentItems[i].qty=Math.max(1,Number(currentItems[i].qty||1)+delta);renderGroupCartReview();}
+function deleteReviewItem(i){currentItems.splice(i,1);renderGroupCartReview();}
+function submitCurrentOrder(){
+  if(groupSubmitting)return;
+  rebuildCurrentLinesFromItems();
+  const err=validateCurrentItems();
+  if(err){alert(err);return;}
+  addToGroup();
+}
+function addToGroup(){
+  const err=validateCurrentItems();
+  if(err){alert(err);return;}
+  if(groupSubmitting)return;
+  groupSubmitting=true;
+  const btn=document.getElementById('addGroupBtn');
+  const submitBtn=document.querySelector('.group-cart-footer .green');
+  const old=btn?btn.textContent:'';
+  const oldSubmit=submitBtn?submitBtn.textContent:'';
+  if(btn){btn.disabled=true;btn.textContent='送出中...';}
+  if(submitBtn){submitBtn.disabled=true;submitBtn.textContent='送出中...';}
+  const buyer=document.getElementById('buyerName').value.trim();
+  const phone=document.getElementById('buyerPhone').value.trim();
+  const memo=document.getElementById('buyerMemo').value.trim();
+  const lines=[`【${buyer}】`].concat(currentLines);
+  if(phone)lines.splice(1,0,'分機/電話：'+phone);
+  if(memo)lines.push('備註：'+memo);
+  jsonp({action:'groupAddOrder',gid:gid,adminKey:(isAdmin?adminKey:''),buyerName:buyer,buyerPhone:phone,qtyTotal:qtyTotal,amountTotal:amountTotal,orderText:lines.join('\n'),items:JSON.stringify(currentItems),memo:memo})
+    .then(res=>{
+      if(!res.ok){alert(res.message||'加入失敗');return;}
+      closeGroupCartReview();
+      resetCurrentOrder();
+      return loadAll();
+    })
+    .then(()=>{alert('已加入/更新團購');})
+    .catch(()=>alert('加入失敗，請稍後再試'))
+    .finally(()=>{
+      groupSubmitting=false;
+      if(btn){btn.disabled=false;btn.textContent=old||'確認個人餐點';}
+      if(submitBtn){submitBtn.disabled=false;submitBtn.textContent=oldSubmit||'加入/更新團購';}
+    });
+}
+function loadMyOrder(){
+  const name=document.getElementById('buyerName').value.trim();
+  const phone=document.getElementById('buyerPhone').value.trim();
+  if(!name&&!phone){alert('請先填姓名或電話，才能載入你的訂單');return;}
+  const entries=(lastGroupData&&lastGroupData.entries)||[];
+  const hit=entries.find(e=>(phone&&String(e.buyerPhone||'').trim()===phone)||(!phone&&name&&String(e.buyerName||'').trim()===name));
+  const hint=document.getElementById('myOrderHint');
+  if(!hit){if(hint)hint.textContent='目前找不到你已送出的餐點。';alert('目前找不到你已送出的餐點');return;}
+  currentItems=Array.isArray(hit.items)?JSON.parse(JSON.stringify(hit.items)):[];
+  loadedFromExisting=true;rebuildCurrentLinesFromItems();
+  if(hint)hint.textContent='已載入你上次送出的餐點，可點下方「確認個人餐點」調整數量或刪除。';
+  openGroupCartReview();
+}
+function resetCurrentOrder(){loadedFromExisting=false;currentItems=[];currentLines=[];document.querySelectorAll('.qty').forEach(q=>q.value=0);document.querySelectorAll('.custom-select-btn').forEach(b=>{b.dataset.value='REQUIRED';b.textContent='請選擇主食'});document.querySelectorAll('.addon-multi').forEach(box=>{box.dataset.selected='';box.querySelector('button').textContent=(box.dataset.mode==='single'?'選擇換購飲料':'選擇加購')});calc();}
+function getRadioValue(name, fallback=''){return document.querySelector(`input[name="${name}"]:checked`)?.value || fallback;}
+function toggleGroupAddressRequired(){const take=getChoiceValue('takeType','外送');const mark=document.getElementById('addressRequiredText');const addr=document.getElementById('address');if(mark) mark.style.display=take==='外送'?'inline':'none';if(addr) addr.placeholder=take==='外送'?'外送時必填':'外帶可不填';}
+function createGroup(){
+  const groupName=document.getElementById('groupName').value.trim();
+  const hostName=document.getElementById('hostName').value.trim();
+  const hostPhone=document.getElementById('hostPhone').value.trim();
+  const key=document.getElementById('adminKey').value.trim();
+  const deadline=document.getElementById('deadlineTime').value.trim();
+  const takeType=getChoiceValue('takeType','外送');
+  const address=document.getElementById('address').value.trim();
+  const utensils=getChoiceValue('utensils','不需要餐具');
+  const drinkBag=getChoiceValue('drinkBag','不需要');
+  if(!hostName){alert('請填主揪姓名');return;}
+  if(!hostPhone){alert('請填主揪電話');return;}
+  if(!key||key.length<4){alert('請設定至少4碼管理金鑰');return;}
+  if(!deadline){alert('請設定團購截止時間');return;}
+  if(takeType==='外送'&&!address){alert('外送請填寫外送地址');return;}
+  const memoBase=document.getElementById('groupMemo').value.trim();
+  const btn=document.getElementById('createGroupBtn');const old=btn?btn.textContent:'';
+  if(btn){btn.disabled=true;btn.textContent='建立中，請稍後...';}
+  jsonp({
+    action:'groupCreate',
+    groupName:groupName,
+    hostName:hostName,
+    hostPhone:hostPhone,
+    adminKey:key,
+    deadlineTime:deadline,
+    company:document.getElementById('company').value.trim(),
+    takeType:takeType,
+    address:address,
+    arriveTime:document.getElementById('arriveTime').value.trim(),
+    memo:memoBase,
+    utensils:utensils,
+    drinkBag:drinkBag,
+    utensilsNeed:utensils.includes('需要')?'TRUE':'FALSE',
+    drinkBagNeed:drinkBag.includes('需要')?'TRUE':'FALSE'
+  }).then(res=>{
+    if(!res.ok){alert(res.message||'建立失敗');if(btn){btn.disabled=false;btn.textContent=old;}return;}
+    localStorage.setItem('groupAdminKey_'+res.groupId,key);
+    location.href=location.origin+location.pathname+'?gid='+res.groupId;
+  }).catch(()=>{alert('建立失敗，請稍後再試');if(btn){btn.disabled=false;btn.textContent=old;}});
+}
+function submitGroup(){
+  const btn=document.getElementById('submitGroupBtn');
+  if(btn&&btn.disabled)return;
+  if(gid && localStorage.getItem(groupLockKey()) === 'TRUE'){
+    lockSubmittedButton();
+    alert('此團購已送出，無法再次送出');
+    return;
+  }
+  if(!confirm('確定送出團購總訂單給店家？送出後同事就不能再加入。'))return;
+  const old=btn?btn.textContent:'';
+  if(btn){btn.disabled=true;btn.textContent='送出中，請稍後...';}
+  jsonp({action:'groupSubmit',gid:gid,adminKey:adminKey}).then(res=>{
+    if(!res.ok){
+      const msg=res.message||'送出失敗';
+      if(String(msg).includes('已送出')){
+        lockSubmittedButton((String(msg).match(/A\d+/)||[''])[0]);
+      }else if(btn){
+        btn.disabled=false;
+        btn.textContent=old||'主揪送出團購總訂單';
+      }
+      alert(msg);
+      loadAll();
+      return;
+    }
+    alert('團購已送出，訂單編號：'+res.orderId);
+    lockSubmittedButton(res.orderId);
+    loadAll();
+  }).catch(()=>{
+    alert('送出失敗，請稍後再試');
+    if(btn){btn.disabled=false;btn.textContent=old||'主揪送出團購總訂單';}
+  });
+}
+function toggleAdminLogin(){document.getElementById('adminLoginBox')?.classList.toggle('hidden');}
+function loginAdmin(){
+  const key=document.getElementById('adminLoginKey').value.trim();
+  if(!key){alert('請輸入管理金鑰');return;}
+  jsonp({action:'groupCheckAdmin',gid:gid,adminKey:key}).then(res=>{
+    if(!res.ok){alert(res.message||'管理金鑰錯誤');return;}
+    adminKey=key;isAdmin=true;localStorage.setItem('groupAdminKey_'+gid,key);document.body.classList.add('admin-mode');document.getElementById('summaryPanel')?.classList.remove('hidden');document.getElementById('adminDashboardPanel')?.classList.remove('hidden');
+    renderGroup(res);renderMenu();
+    alert('已進入主揪管理模式');
+  }).catch(()=>alert('登入失敗，請稍後再試'));
+}
+function updateDeadline(){
+  if(!isAdmin){alert('請先主揪登入');return;}
+  const deadline=document.getElementById('newDeadlineTime').value.trim();
+  if(!deadline){alert('請輸入新的截止時間');return;}
+  jsonp({action:'groupUpdateDeadline',gid:gid,adminKey:adminKey,deadlineTime:deadline}).then(res=>{
+    if(!res.ok){alert(res.message||'更新失敗');return;}
+    renderGroup(res);renderMenu();
+    alert('已更新截止時間');
+  }).catch(()=>alert('更新失敗，請稍後再試'));
+}
+function queryOrder(){queryGroupOrder();}
+function deleteEntry(rowNumber,buyerName){if(!rowNumber){alert('這筆資料無法刪除，請重新整理後再試');return;}if(!confirm('確定刪除 '+(buyerName||'這位同事')+' 的團購餐點？'))return;jsonp({action:'groupDeleteEntry',gid:gid,adminKey:adminKey,rowNumber:rowNumber}).then(res=>{if(!res.ok){alert(res.message||'刪除失敗');return;}alert('已刪除');loadAll();}).catch(()=>alert('刪除失敗，請稍後再試'));}
+function queryGroupOrder(){
+  const phone=document.getElementById('queryPhone').value.trim();
+  const result=document.getElementById('queryResult');
+  if(!phone){alert('請輸入主揪電話');return;}
+  result.textContent='查詢中...';
+  jsonp({action:'groupGetByPhone',phone:phone}).then(res=>{
+    if(!res.ok){result.textContent='❌ '+(res.message||'查無團購訂單');return;}
+    lastGroupData=res; const g=res.group||{}; currentGroup=g;
+    const summaryLines=(res.summary&&res.summary.lines&&res.summary.lines.length)?res.summary.lines:buildClientSummaryLines(res.entries||[]);
+    let txt='【192巷食堂｜團購訂單】\n團購編號：'+(g.groupId||'')+'\n狀態：'+(g.status||'')+'\n主揪：'+(g.hostName||'')+'\n電話：'+(g.hostPhone||'')+'\n取餐方式：'+(g.takeType||'')+(g.address?'\n外送地址：'+g.address:'')+(g.company?'\n公司名稱：'+g.company:'')+'\n時間：'+(g.arriveTime||'')+'\n餐具：'+(g.utensils||'不需要餐具')+'\n飲料袋：'+(g.drinkBag||'不需要');
+    txt+='\n\n【彙整訂單｜店家備餐用】\n'+(summaryLines.length?summaryLines.join('\n'):'無彙整資料');
+    txt+='\n\n【個人明細｜主揪核對用】';
+    (res.entries||[]).forEach((e,i)=>{txt+='\n\n'+(i+1)+'. 【'+(e.buyerName||'未填')+'】'+(e.buyerPhone?' 分機/電話：'+e.buyerPhone:'')+'｜'+(e.qtyTotal||0)+'份｜$'+(e.amountTotal||0)+'\n'+String(cleanGroupEntryText(e.orderText||'')).replace(/<br\s*\/?|&lt;br\s*\/?&gt;/g,'\n');});
+    txt+='\n\n總人數：'+((res.entries||[]).length)+' 人\n總數量：'+(res.totalQty||0)+' 份\n總金額：$'+(res.totalAmount||0);
+    if(g.orderId)txt+='\n訂單編號：'+g.orderId;
+    result.textContent=txt;
+  }).catch(()=>{result.textContent='❌ 查詢失敗，請稍後再試';});
+}
+function copyShareLink(){const el=document.getElementById('shareLink');el.select();navigator.clipboard?.writeText(el.value);alert('團購連結已複製');}
+function escapeHtml(s){return String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}function escapeAttr(s){return escapeHtml(s).replace(/'/g,'&#39;')}
+toggleGroupAddressRequired();
+init();
+</script>
+</body>
+</html>
