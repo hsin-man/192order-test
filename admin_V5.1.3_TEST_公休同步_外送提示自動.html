@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>192巷食堂｜店家後台 V5.1.3 TEST</title>
+<style>
+body{font-family:"Microsoft JhengHei",Arial,sans-serif;background:#f5ead8;margin:0;color:#333;padding-bottom:30px}
+header{background:#5c6148;color:white;text-align:center;padding:18px 12px;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+header h1{margin:0;font-size:24px;letter-spacing:1px}
+header p{margin:6px 0 0;font-size:13px;opacity:.9}
+.container{max-width:900px;margin:auto;padding:12px}
+.card{background:#fffaf0;border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 3px 12px rgba(0,0,0,.12)}
+.login-card{max-width:420px;margin:40px auto;background:#fffaf0;border-radius:18px;padding:18px;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+input{width:100%;box-sizing:border-box;padding:12px;border:1px solid #c9b89c;border-radius:10px;font-size:16px;background:white;color:#333}
+button{border:0;border-radius:10px;padding:10px 12px;font-size:15px;cursor:pointer;background:#c65f26;color:white;font-weight:bold}
+button.secondary{background:#586047}button.gray{background:#868e96}button.red{background:#c92a2a}button.green{background:#2f9e44}button.yellow{background:#f08c00;color:white}
+button:disabled{opacity:.55;cursor:not-allowed}
+.tabs{display:flex;gap:8px;margin:12px 0;position:sticky;top:74px;z-index:40;background:#f5ead8;padding:8px 0}
+.tabs button{flex:1;background:#fff;color:#4f3c24;border:1px solid #d9a45f}.tabs button.active{background:#c65f26;color:#fff;border-color:#c65f26}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.summary .box{background:#fff;border:1px solid #eadcc6;border-radius:14px;padding:12px;text-align:center}.summary .num{font-size:24px;font-weight:bold;color:#b23b25}.summary .label{font-size:13px;color:#666;margin-top:4px}
+.sound-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.sound-status{font-weight:bold;color:#b23b25}.notice{background:#fff4cc;border-left:6px solid #f08c00;padding:10px;border-radius:8px;line-height:1.6;font-size:14px}
+.order-card{background:#fff;border:1px solid #eadcc6;border-radius:16px;padding:14px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.order-card.new{border:2px solid #e03131;animation:pulseRed 1.2s infinite}.order-card.processing{border-left:8px solid #f08c00}.order-card.done{border-left:8px solid #2f9e44}.order-card.cancel{opacity:.72;border-left:8px solid #868e96}
+@keyframes pulseRed{0%{box-shadow:0 0 0 rgba(224,49,49,0)}50%{box-shadow:0 0 18px rgba(224,49,49,.38)}100%{box-shadow:0 0 0 rgba(224,49,49,0)}}
+.order-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.order-id{font-size:22px;font-weight:bold;color:#b23b25}.status-badge{border-radius:999px;padding:5px 10px;font-size:13px;font-weight:bold;color:white;white-space:nowrap}.st-new{background:#e03131}.st-processing{background:#f08c00}.st-done{background:#2f9e44}.st-cancel{background:#868e96}
+.order-info{line-height:1.8;margin-top:8px}.amount{font-size:20px;color:#c92a2a;font-weight:bold}.actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.actions button{flex:1;min-width:92px}.detail{display:none;margin-top:12px;background:#fff8e8;border-radius:12px;padding:12px;white-space:pre-wrap;line-height:1.7;border:1px dashed #d9a45f}.detail.show{display:block}
+.filter-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}.filter-row button{white-space:nowrap;background:#fff;color:#4f3c24;border:1px solid #d9a45f}.filter-row button.active{background:#586047;color:white;border-color:#586047}
+.menu-category{margin-top:12px}.menu-title{font-size:18px;font-weight:bold;color:#b23b25;margin:12px 0 8px}.menu-item{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#fff;border:1px solid #eadcc6;border-radius:12px;padding:10px;margin:8px 0}.menu-name{font-weight:bold}.menu-sub{font-size:13px;color:#777;margin-top:3px}.menu-status{min-width:72px}.menu-status.normal{background:#2f9e44}.menu-status.soldout{background:#c92a2a}
+.menu-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 12px}.menu-toolbar button{flex:1;min-width:120px}.menu-save-note{font-size:14px;color:#b23b25;font-weight:bold;margin-top:8px}.menu-check{display:flex;align-items:center;gap:10px}.menu-check input{width:auto;transform:scale(1.25)}.menu-item.changed{border:2px solid #f08c00;background:#fff8e8}.menu-status-text{min-width:48px;font-weight:bold;text-align:right}.menu-status-text.normal{color:#2f9e44}.menu-status-text.soldout{color:#c92a2a}
+
+
+.store-status{font-size:22px;font-weight:bold;border-radius:16px;padding:14px;text-align:center;margin:10px 0}.store-open{background:#d3f9d8;color:#2b8a3e}.store-closed{background:#ffe3e3;color:#c92a2a}.store-pause{background:#fff3bf;color:#b23b25}.week-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.week-item{background:#fff;border:1px solid #eadcc6;border-radius:12px;padding:12px;display:flex;gap:8px;align-items:center;font-weight:bold}.week-item input{width:auto;transform:scale(1.25)}.store-actions{display:flex;gap:8px;flex-wrap:wrap}.store-actions button{flex:1;min-width:120px}@media(max-width:700px){.week-grid{grid-template-columns:repeat(2,1fr)}}
+.hidden{display:none!important}.empty{text-align:center;color:#777;padding:28px 8px;line-height:1.8}.loading{text-align:center;padding:18px;color:#777}.small{font-size:13px;color:#666;line-height:1.6}
+@media(max-width:700px){header h1{font-size:22px}.container{padding:10px}.summary{grid-template-columns:repeat(2,1fr)}.tabs{top:68px}.order-head{align-items:center}.actions button{font-size:14px;padding:10px 6px}.order-id{font-size:20px}}
+
+.delivery-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.delivery-grid .full{grid-column:1/-1}
+.switch-row{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #eadcc6;border-radius:12px;padding:12px;font-weight:bold}
+.switch-row input{width:auto;transform:scale(1.25)}
+.delivery-preview{font-size:14px;color:#666;line-height:1.6;margin-top:8px}
+@media(max-width:700px){.delivery-grid{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<header>
+  <h1>192巷食堂｜店家後台 V5.1.3 TEST</h1>
+  <p>訂單管理・品項售完・營業設定・新單鈴聲提醒</p>
+</header>
+
+<div id="loginView" class="login-card">
+  <h2>後台登入</h2>
+  <p class="small">請輸入後台密碼。預設密碼為 1920，可之後在 Apps Script 系統設定調整。</p>
+  <input id="pinInput" type="password" placeholder="請輸入密碼" autocomplete="off">
+  <button style="width:100%;margin-top:12px" onclick="loginAdmin()">登入後台</button>
+  <div id="loginMsg" class="small" style="margin-top:10px;color:#c92a2a"></div>
+</div>
+
+<div id="appView" class="container hidden">
+  <div class="card">
+    <div class="sound-row">
+      <button id="soundBtn" class="secondary" onclick="enableSound()">🔔 啟用鈴聲</button>
+      <span id="soundStatus" class="sound-status">鈴聲尚未啟用</span>
+      <button class="gray" onclick="manualRefresh()">重新整理</button>
+    </div>
+    <div class="notice" style="margin-top:10px">有新訂單時會立即提醒，之後每 15 秒提醒一次，直到按下「製作中」。</div>
+  </div>
+
+  <div class="tabs">
+    <button id="tabOrders" class="active" onclick="switchTab('orders')">📋 訂單管理</button>
+    <button id="tabMenu" onclick="switchTab('menu')">🍽 品項管理</button>
+    <button id="tabStore" onclick="switchTab('store')">🏪 營業設定</button>
+  </div>
+
+  <section id="ordersPanel">
+    <div class="card">
+      <div class="summary">
+        <div class="box"><div id="newCount" class="num">0</div><div class="label">新訂單</div></div>
+        <div class="box"><div id="processingCount" class="num">0</div><div class="label">製作中</div></div>
+        <div class="box"><div id="doneCount" class="num">0</div><div class="label">已完成</div></div>
+        <div class="box"><div id="totalCount" class="num">0</div><div class="label">今日訂單</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="filter-row">
+        <button id="filterAll" class="active" onclick="setFilter('全部')">全部</button>
+        <button id="filterNew" onclick="setFilter('新訂單')">新訂單</button>
+        <button id="filterProcessing" onclick="setFilter('製作中')">製作中</button>
+        <button id="filterDone" onclick="setFilter('已完成')">已完成</button>
+        <button id="filterCancel" onclick="setFilter('取消')">取消</button>
+      </div>
+      <div id="ordersList" class="loading">讀取訂單中...</div>
+    </div>
+  </section>
+
+  <section id="menuPanel" class="hidden">
+    <div class="card">
+      <div class="notice">點擊品項右側按鈕即可切換「正常 / 售完」。售完後客人點餐頁會依現有機制變灰並不可點。</div>
+      <div id="menuList" class="loading">讀取品項中...</div>
+    </div>
+  </section>
+
+  <section id="storePanel" class="hidden">
+    <div class="card">
+      <h2>🏪 營業狀態</h2>
+      <div id="storeStatusBox" class="store-status store-pause">讀取中...</div>
+      <div class="store-actions">
+        <button class="green" onclick="setManualPause('FALSE')">開放接單</button>
+        <button class="red" onclick="setManualPause('TRUE')">今日暫停接單</button>
+      </div>
+      <div class="notice" style="margin-top:10px">
+        「今日暫停接單」適合臨時公休、太忙、食材售完時使用。
+      </div>
+    </div>
+
+
+    <div class="card">
+      <h2>🚚 外送設定</h2>
+      <label class="switch-row">
+        <input type="checkbox" id="deliveryEnabled" onchange="markDeliveryChanged()">
+        啟用外送
+      </label>
+      <div class="delivery-grid">
+        <div>
+          <label>外送截止時間</label>
+          <input id="deliveryCutoffTime" type="time" onchange="markDeliveryChanged()">
+          <div class="small">例如 19:00；留空代表不限制截止時間。</div>
+        </div>
+        <div class="full">
+          <label>外送截止提示</label>
+          <input id="deliveryCutoffMessage" placeholder="今日19:00後不提供外送，請選擇外帶或內用。" oninput="markDeliveryChanged()">
+        </div>
+      </div>
+      <button style="width:100%;margin-top:12px" onclick="saveDeliverySettings()">儲存外送設定</button>
+      <div id="deliveryMsg" class="small" style="margin-top:10px;color:#b23b25"></div>
+      <div id="deliveryPreview" class="delivery-preview"></div>
+    </div>
+
+    <div class="card">
+      <h2>公休日設定</h2>
+      <div class="small">勾選代表營業；未勾選代表公休。</div>
+      <div class="week-grid">
+        <label class="week-item"><input type="checkbox" class="weekday" value="1"> 星期一</label>
+        <label class="week-item"><input type="checkbox" class="weekday" value="2"> 星期二</label>
+        <label class="week-item"><input type="checkbox" class="weekday" value="3"> 星期三</label>
+        <label class="week-item"><input type="checkbox" class="weekday" value="4"> 星期四</label>
+        <label class="week-item"><input type="checkbox" class="weekday" value="5"> 星期五</label>
+        <label class="week-item"><input type="checkbox" class="weekday" value="6"> 星期六</label>
+        <label class="week-item"><input type="checkbox" class="weekday" value="0"> 星期日</label>
+      </div>
+      <button style="width:100%;margin-top:12px" onclick="saveWeekdays()">儲存公休日設定</button>
+      <div id="storeMsg" class="small" style="margin-top:10px;color:#b23b25"></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfRp77uReVhZzhEsgkDvjnLgj6juqXINpgDGRsb1Wjgefu01d_-s-xADBHWy_RUwmAow/exec";
+let adminPin = localStorage.getItem('adminPin') || '';
+let currentTab = 'orders';
+let currentFilter = '全部';
+let orders = [];
+let menuItems = [];
+let menuChanges = {};
+let soundEnabled = false;
+let audioCtx = null;
+let reminderTimer = null;
+let pollingTimer = null;
+let lastNewKey = '';
+let lastReminderAt = 0;
+
+if(adminPin){
+  document.getElementById('pinInput').value = adminPin;
+}
+
+function loginAdmin(){
+  const pin = document.getElementById('pinInput').value.trim();
+  if(!pin){ document.getElementById('loginMsg').textContent = '請輸入密碼'; return; }
+  adminPin = pin;
+  localStorage.setItem('adminPin', pin);
+  document.getElementById('loginView').classList.add('hidden');
+  document.getElementById('appView').classList.remove('hidden');
+  startAdmin();
+}
+
+function startAdmin(){
+  loadOrders(true);
+  loadMenu();
+  loadStoreStatus();
+  if(pollingTimer) clearInterval(pollingTimer);
+  pollingTimer = setInterval(()=>{
+    if(currentTab === 'orders') loadOrders(false);
+  }, 8000);
+  if(reminderTimer) clearInterval(reminderTimer);
+  reminderTimer = setInterval(checkReminder, 1000);
+}
+
+function jsonp(params){
+  return new Promise((resolve,reject)=>{
+    const cb = 'cb_' + Date.now() + '_' + Math.floor(Math.random()*100000);
+    const script = document.createElement('script');
+    params.callback = cb;
+    params.t = Date.now();
+    const qs = Object.keys(params).map(k=>encodeURIComponent(k)+'='+encodeURIComponent(params[k])).join('&');
+    window[cb] = function(data){
+      cleanup();
+      resolve(data);
+    };
+    script.onerror = function(){ cleanup(); reject(new Error('讀取失敗')); };
+    function cleanup(){
+      delete window[cb];
+      if(script.parentNode) script.parentNode.removeChild(script);
+    }
+    script.src = GOOGLE_SCRIPT_URL + '?' + qs;
+    document.body.appendChild(script);
+  });
+}
+
+function switchTab(tab){
+  currentTab = tab;
+  document.getElementById('tabOrders').classList.toggle('active', tab === 'orders');
+  document.getElementById('tabMenu').classList.toggle('active', tab === 'menu');
+  document.getElementById('tabStore').classList.toggle('active', tab === 'store');
+  document.getElementById('ordersPanel').classList.toggle('hidden', tab !== 'orders');
+  document.getElementById('menuPanel').classList.toggle('hidden', tab !== 'menu');
+  document.getElementById('storePanel').classList.toggle('hidden', tab !== 'store');
+  if(tab === 'orders') loadOrders(false);
+  if(tab === 'menu') loadMenu();
+  if(tab === 'store') loadStoreStatus();
+}
+
+function manualRefresh(){
+  if(currentTab === 'orders') loadOrders(true);
+  else if(currentTab === 'menu') loadMenu();
+  else loadStoreStatus();
+}
+
+function loadOrders(showLoading){
+  if(showLoading) document.getElementById('ordersList').innerHTML = '<div class="loading">讀取訂單中...</div>';
+  jsonp({action:'adminOrders', pin:adminPin}).then(res=>{
+    if(!res.ok){ showError(res.message || '讀取失敗'); return; }
+    orders = res.orders || [];
+    updateSummary(res.summary || {});
+    renderOrders();
+    detectNewOrders();
+  }).catch(()=>showError('讀取訂單失敗，請確認 Apps Script 已部署新版本'));
+}
+
+function showError(msg){
+  document.getElementById('ordersList').innerHTML = '<div class="empty">❌ '+escapeHtml(msg)+'</div>';
+}
+
+function updateSummary(s){
+  document.getElementById('newCount').textContent = s.newCount || 0;
+  document.getElementById('processingCount').textContent = s.processingCount || 0;
+  document.getElementById('doneCount').textContent = s.doneCount || 0;
+  document.getElementById('totalCount').textContent = s.total || 0;
+}
+
+function setFilter(filter){
+  currentFilter = filter;
+  ['All','New','Processing','Done','Cancel'].forEach(x=>document.getElementById('filter'+x).classList.remove('active'));
+  const map = {'全部':'All','新訂單':'New','製作中':'Processing','已完成':'Done','取消':'Cancel'};
+  document.getElementById('filter'+map[filter]).classList.add('active');
+  renderOrders();
+}
+
+function renderOrders(){
+  const list = document.getElementById('ordersList');
+  let data = orders.slice();
+  if(currentFilter !== '全部') data = data.filter(o=>o.status === currentFilter);
+  const rank = {'新訂單':1,'製作中':2,'已完成':3,'取消':4};
+  data.sort((a,b)=>(rank[a.status]||9)-(rank[b.status]||9));
+  if(!data.length){ list.innerHTML = '<div class="empty">目前沒有訂單</div>'; return; }
+  list.innerHTML = data.map(renderOrderCard).join('');
+}
+
+function renderOrderCard(o){
+  const cls = o.status === '新訂單' ? 'new' : o.status === '製作中' ? 'processing' : o.status === '已完成' ? 'done' : 'cancel';
+  const badgeCls = o.status === '新訂單' ? 'st-new' : o.status === '製作中' ? 'st-processing' : o.status === '已完成' ? 'st-done' : 'st-cancel';
+  const takeIcon = o.takeType === '外送' ? '🚚' : o.takeType === '外帶' ? '📦' : '🍽';
+  let actions = `<button class="gray" onclick="toggleDetail('${o.orderId}')">查看明細</button>`;
+  if(o.status === '新訂單'){
+    actions += `<button class="yellow" onclick="updateOrderStatus('${o.orderId}','製作中')">製作中</button><button class="red" onclick="cancelOrder('${o.orderId}')">取消</button>`;
+  }else if(o.status === '製作中'){
+    actions += `<button class="green" onclick="updateOrderStatus('${o.orderId}','已完成')">已完成</button><button class="red" onclick="cancelOrder('${o.orderId}')">取消</button>`;
+  }else if(o.status === '取消'){
+    actions += `<button class="yellow" onclick="updateOrderStatus('${o.orderId}','新訂單')">恢復新訂單</button>`;
+  }
+  return `
+    <div class="order-card ${cls}" id="card-${escapeAttr(o.orderId)}">
+      <div class="order-head">
+        <div><div class="order-id">${escapeHtml(o.orderId || '')}</div><div class="small">${escapeHtml(o.sentTime || '')}</div></div>
+        <div class="status-badge ${badgeCls}">${escapeHtml(o.status)}</div>
+      </div>
+      <div class="order-info">
+        <div>👤 ${escapeHtml(o.name || '未填')}　📞 ${escapeHtml(o.phone || '')}</div>
+        <div>${takeIcon} ${escapeHtml(o.takeType || '')}　🕒 ${escapeHtml(o.arriveTime || '未填')}</div>
+        ${o.address ? `<div>📍 ${escapeHtml(o.address)}</div>` : ''}
+        ${o.company ? `<div>🏢 ${escapeHtml(o.company)}</div>` : ''}
+        <div class="amount">$${escapeHtml(String(o.amountTotal || 0))}</div>
+      </div>
+      <div class="actions">${actions}</div>
+      <div class="detail" id="detail-${escapeAttr(o.orderId)}">${escapeHtml(o.orderText || '無訂單內容')}</div>
+    </div>`;
+}
+
+function toggleDetail(orderId){
+  const el = document.getElementById('detail-' + orderId);
+  if(el) el.classList.toggle('show');
+}
+
+function updateOrderStatus(orderId,status){
+  jsonp({action:'adminUpdateStatus', pin:adminPin, orderId:orderId, status:status}).then(res=>{
+    if(!res.ok){ alert(res.message || '更新失敗'); return; }
+    loadOrders(false);
+  }).catch(()=>alert('更新失敗，請稍後再試'));
+}
+
+function cancelOrder(orderId){
+  if(confirm('確定取消訂單 ' + orderId + '？')) updateOrderStatus(orderId,'取消');
+}
+
+function detectNewOrders(){
+  const newOrders = orders.filter(o=>o.status === '新訂單');
+  const key = newOrders.map(o=>o.orderId).sort().join('|');
+  if(key && key !== lastNewKey){
+    lastReminderAt = 0;
+    playAlert();
+  }
+  lastNewKey = key;
+}
+
+function enableSound(){
+  audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  soundEnabled = true;
+  document.getElementById('soundStatus').textContent = '鈴聲已啟用：新訂單每15秒提醒';
+  document.getElementById('soundBtn').textContent = '🔔 測試鈴聲';
+  playAlert();
+}
+
+function playAlert(){
+  if(!soundEnabled) return;
+  audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+  const now = audioCtx.currentTime;
+  [0,0.22,0.44,0.80,1.02,1.24].forEach((delay, i)=>{
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'square';
+    osc.frequency.value = i % 2 ? 880 : 660;
+    gain.gain.setValueAtTime(0.0001, now + delay);
+    gain.gain.exponentialRampToValueAtTime(0.65, now + delay + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + delay + 0.16);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now + delay); osc.stop(now + delay + 0.18);
+  });
+  if(navigator.vibrate) navigator.vibrate([250,120,250,120,250]);
+  lastReminderAt = Date.now();
+}
+
+function checkReminder(){
+  const hasNew = orders.some(o=>o.status === '新訂單');
+  if(hasNew && soundEnabled && Date.now() - lastReminderAt >= 15000){
+    playAlert();
+  }
+}
+
+function loadMenu(){
+  document.getElementById('menuList').innerHTML = '<div class="loading">讀取品項中...</div>';
+  jsonp({action:'adminMenu', pin:adminPin}).then(res=>{
+    if(!res.ok){ document.getElementById('menuList').innerHTML = '<div class="empty">❌ '+escapeHtml(res.message||'讀取失敗')+'</div>'; return; }
+    menuItems = res.items || [];
+    menuChanges = {};
+    renderMenu(menuItems);
+  }).catch(()=>document.getElementById('menuList').innerHTML = '<div class="empty">❌ 讀取品項失敗</div>');
+}
+
+function renderMenu(items){
+  const list = document.getElementById('menuList');
+  if(!items.length){ list.innerHTML = '<div class="empty">目前沒有品項</div>'; return; }
+  const groups = {};
+  items.forEach(x=>{
+    const cat = x.category || '未分類';
+    if(!groups[cat]) groups[cat] = [];
+    groups[cat].push(x);
+  });
+  let html = `<div class="menu-toolbar">
+    <button class="green" onclick="saveMenuChanges()">儲存變更</button>
+    <button class="gray" onclick="discardMenuChanges()">放棄變更</button>
+  </div>
+  <div id="menuSaveNote" class="menu-save-note">尚未變更</div>
+  <div class="notice">勾選代表「正常販售」；取消勾選代表「售完」。可一次調整多個品項，最後再按「儲存變更」。</div>`;
+  Object.keys(groups).forEach(cat=>{
+    html += `<div class="menu-category"><div class="menu-title">${escapeHtml(cat)}</div>`;
+    groups[cat].forEach(item=>{
+      const originalSold = String(item.status || '').includes('售完') || String(item.status || '').includes('停售') || String(item.status || '').includes('暫停');
+      const currentStatus = menuChanges[item.name] || (originalSold ? '售完' : '正常');
+      const sold = currentStatus === '售完';
+      const changed = !!menuChanges[item.name];
+      html += `<div class="menu-item ${changed?'changed':''}">
+        <label class="menu-check">
+          <input type="checkbox" ${sold?'':'checked'} onchange="markMenuChange('${escapeAttr(item.name)}', this.checked)">
+          <div><div class="menu-name">${escapeHtml(item.name||'')}</div><div class="menu-sub">$${escapeHtml(String(item.price||''))}</div></div>
+        </label>
+        <div class="menu-status-text ${sold?'soldout':'normal'}">${sold?'售完':'正常'}</div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  list.innerHTML = html;
+  updateMenuSaveNote();
+}
+
+function markMenuChange(name, isNormal){
+  const item = menuItems.find(x=>x.name === name);
+  if(!item) return;
+  const originalSold = String(item.status || '').includes('售完') || String(item.status || '').includes('停售') || String(item.status || '').includes('暫停');
+  const originalStatus = originalSold ? '售完' : '正常';
+  const newStatus = isNormal ? '正常' : '售完';
+  if(newStatus === originalStatus){
+    delete menuChanges[name];
+  }else{
+    menuChanges[name] = newStatus;
+  }
+  renderMenu(menuItems);
+}
+
+function updateMenuSaveNote(){
+  const el = document.getElementById('menuSaveNote');
+  if(!el) return;
+  const n = Object.keys(menuChanges).length;
+  el.textContent = n ? `尚有 ${n} 個品項未儲存` : '尚未變更';
+}
+
+function discardMenuChanges(){
+  if(Object.keys(menuChanges).length && !confirm('確定放棄尚未儲存的品項變更？')) return;
+  menuChanges = {};
+  renderMenu(menuItems);
+}
+
+function saveMenuChanges(){
+  const changes = Object.keys(menuChanges).map(name=>({name:name, status:menuChanges[name]}));
+  if(!changes.length){ alert('目前沒有需要儲存的變更'); return; }
+  if(!confirm('確定儲存 ' + changes.length + ' 個品項變更？')) return;
+  jsonp({action:'adminBatchSetMenuStatus', pin:adminPin, changes:JSON.stringify(changes)}).then(res=>{
+    if(!res.ok){ alert(res.message || '儲存失敗'); return; }
+    alert('已儲存 ' + (res.updated || changes.length) + ' 個品項');
+    loadMenu();
+  }).catch(()=>alert('儲存失敗，請稍後再試'));
+}
+
+function toggleMenuStatus(name,status){
+  // 保留舊函式避免舊按鈕快取呼叫；新版改用批次儲存。
+  menuChanges[name] = status;
+  renderMenu(menuItems);
+}
+
+
+function loadStoreStatus(){
+  const box = document.getElementById('storeStatusBox');
+  const msg = document.getElementById('storeMsg');
+  if(box) box.textContent = '讀取中...';
+  if(msg) msg.textContent = '';
+  jsonp({action:'adminStoreStatus', pin:adminPin}).then(res=>{
+    if(!res.ok){
+      if(box){ box.className = 'store-status store-closed'; box.textContent = '讀取失敗：' + (res.message || ''); }
+      return;
+    }
+    renderStoreStatus(res.store || res);
+  }).catch(()=>{
+    if(box){ box.className = 'store-status store-closed'; box.textContent = '讀取營業狀態失敗'; }
+  });
+}
+
+function renderStoreStatus(s){
+  const box = document.getElementById('storeStatusBox');
+  const weekdays = String(s.openWeekdays || '1,2,3,4,5,6').split(',').filter(x=>x !== '');
+
+  const deliveryEnabled = document.getElementById('deliveryEnabled');
+  const deliveryCutoffTime = document.getElementById('deliveryCutoffTime');
+  const deliveryCutoffMessage = document.getElementById('deliveryCutoffMessage');
+  const deliveryPreview = document.getElementById('deliveryPreview');
+
+  const enabledValue = String(s.deliveryEnabled ?? 'TRUE').toUpperCase() !== 'FALSE';
+  const cutoffValue = s.deliveryCutoffTime || '';
+  const msgValue = s.deliveryCutoffMessage || '今日19:00後不提供外送，請選擇外帶或內用。';
+
+  if(deliveryEnabled) deliveryEnabled.checked = enabledValue;
+  if(deliveryCutoffTime) deliveryCutoffTime.value = cutoffValue;
+  if(deliveryCutoffMessage) deliveryCutoffMessage.value = msgValue;
+
+  if(deliveryPreview){
+    const enabledText = enabledValue ? '啟用外送' : '停用外送';
+    const cutoffText = cutoffValue || '不限制';
+    const frontText = s.deliveryAllowed === false ? '前台將切換外帶' : '前台可選外送';
+    deliveryPreview.innerHTML = `目前：${enabledText}｜截止時間：${cutoffText}｜${frontText}`;
+  }
+  document.querySelectorAll('.weekday').forEach(cb=>{
+    cb.checked = weekdays.includes(cb.value);
+  });
+
+  if(s.manualPause === 'TRUE'){
+    box.className = 'store-status store-pause';
+    box.textContent = '🔴 今日暫停接單';
+  }else if(s.isOpenToday){
+    box.className = 'store-status store-open';
+    box.textContent = '🟢 今日營業中・開放接單';
+  }else{
+    box.className = 'store-status store-closed';
+    box.textContent = '🔴 今日公休';
+  }
+}
+
+
+function updateDeliveryMessageByTime(){
+  const cutoff = document.getElementById('deliveryCutoffTime')?.value || '';
+  const msg = document.getElementById('deliveryCutoffMessage');
+  if(msg && cutoff){
+    msg.value = `今日${cutoff}後不提供外送，請選擇外帶或內用。`;
+  }
+}
+
+function markDeliveryChanged(){
+  updateDeliveryMessageByTime();
+  const note = document.getElementById('deliveryMsg');
+  if(note) note.textContent = '外送設定尚未儲存';
+}
+
+function saveDeliverySettings(){
+  const enabled = document.getElementById('deliveryEnabled').checked ? 'TRUE' : 'FALSE';
+  const cutoff = document.getElementById('deliveryCutoffTime').value || '';
+  const msg = document.getElementById('deliveryCutoffMessage').value.trim();
+  const note = document.getElementById('deliveryMsg');
+  if(note) note.textContent = '儲存中...';
+
+  jsonp({
+    action:'adminSaveDeliverySettings',
+    pin:adminPin,
+    deliveryEnabled:enabled,
+    deliveryCutoffTime:cutoff,
+    deliveryCutoffMessage:msg
+  }).then(res=>{
+    if(!res.ok){
+      if(note) note.textContent = res.message || '儲存失敗';
+      alert(res.message || '儲存失敗');
+      return;
+    }
+    if(note) note.textContent = '已儲存外送設定';
+    loadStoreStatus();
+  }).catch(()=>{
+    if(note) note.textContent = '儲存失敗，請稍後再試';
+    alert('儲存失敗，請稍後再試');
+  });
+}
+
+function saveWeekdays(){
+  const days = Array.from(document.querySelectorAll('.weekday:checked')).map(cb=>cb.value).join(',');
+  jsonp({action:'adminSaveStoreSchedule', pin:adminPin, openWeekdays:days}).then(res=>{
+    if(!res.ok){ alert(res.message || '儲存失敗'); return; }
+    document.getElementById('storeMsg').textContent = '已儲存公休日設定';
+    loadStoreStatus();
+  }).catch(()=>alert('儲存失敗，請稍後再試'));
+}
+
+function setManualPause(value){
+  const text = value === 'TRUE' ? '確定要暫停接單？' : '確定要開放接單？';
+  if(!confirm(text)) return;
+  jsonp({action:'adminSetManualPause', pin:adminPin, manualPause:value}).then(res=>{
+    if(!res.ok){ alert(res.message || '更新失敗'); return; }
+    loadStoreStatus();
+  }).catch(()=>alert('更新失敗，請稍後再試'));
+}
+
+function escapeHtml(s){
+  return String(s ?? '').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+function escapeAttr(s){return escapeHtml(s).replace(/'/g,'&#39;');}
+</script>
+</body>
+</html>
